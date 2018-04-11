@@ -16,6 +16,10 @@ if [ ! -f /setup.txt ]; then
   mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
   mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE wordpress; GRANT ALL PRIVILEGES ON wordpress.* TO 'wordpress'@'localhost' IDENTIFIED BY '$WORDPRESS_PASSWORD'; FLUSH PRIVILEGES;"
   killall mysqld
+
+  #check nginx directory presence
+  [ -d /var/log/nginx ] || mkdir -p /var/log/nginx && chown /var/log/nginx nginx
+
 fi
 
 # start all the services
