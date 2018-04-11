@@ -6,7 +6,6 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
       - ./web:/usr/share/nginx/www
-      - 
     ports:
       - 3306
       - 22
