@@ -24,7 +24,7 @@ RUN apt-get -y install php-xml php-mbstring php-bcmath php-zip php-pdo-mysql php
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/explicit_defaults_for_timestamp = true\nbind-address = 0.0.0.0/" /etc/mysql/mysql.conf.d/mysqld.cnf
 
 # nginx config
-RUN sed -i -e"s/user\s*www-data;/user topix www-data;/" /etc/nginx/nginx.conf
+RUN sed -i -e"s/user\s*www-data;/user dev www-data;/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/keepalive_timeout\s*65/keepalive_timeout 2/" /etc/nginx/nginx.conf
 RUN sed -i -e"s/keepalive_timeout 2/keepalive_timeout 2;\n\tclient_max_body_size 100m/" /etc/nginx/nginx.conf
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
@@ -34,7 +34,7 @@ RUN sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" /etc
 RUN sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" /etc/php/7.0/fpm/php.ini
 RUN sed -i -e "s/;daemonize\s*=\s*yes/daemonize = no/g" /etc/php/7.0/fpm/php-fpm.conf
 RUN sed -i -e "s/;catch_workers_output\s*=\s*yes/catch_workers_output = yes/g" /etc/php/7.0/fpm/pool.d/www.conf
-RUN sed -i -e "s/user\s*=\s*www-data/user = topix/g" /etc/php/7.0/fpm/pool.d/www.conf
+RUN sed -i -e "s/user\s*=\s*www-data/user = dev/g" /etc/php/7.0/fpm/pool.d/www.conf
 # replace # by ; RUN find /etc/php/7.0/mods-available/tmp -name "*.ini" -exec sed -i -re 's/^(\s*)#(.*)/\1;\2/g' {} \;
 
 # nginx site conf
@@ -45,18 +45,18 @@ RUN /usr/bin/easy_install supervisor
 RUN /usr/bin/easy_install supervisor-stdout
 ADD ./supervisord.conf /etc/supervisord.conf
 
-# Add system user for topix
-RUN useradd -m -d /home/topix -p $(openssl passwd -1 'topix') -G root -s /bin/bash topix \
-    && usermod -a -G www-data topix \
-    && usermod -a -G sudo topix \
-    && ln -s /usr/share/nginx/www /home/topix/www
+# Add system user for dev account
+RUN useradd -m -d /home/dev -p $(openssl passwd -1 'dev') -G root -s /bin/bash dev \
+    && usermod -a -G www-data dev \
+    && usermod -a -G sudo dev \
+    && ln -s /usr/share/nginx/www /home/dev/www
 
-RUN mkdir /home/topix/site \
-    && touch /home/topix/site/index.php \
-    && echo "Hello World" > /home/topix/site/index.php \
-    && mv /home/topix/site /usr/share/nginx/www
+RUN mkdir /home/dev/site \
+    && touch /home/dev/site/index.php \
+    && echo "Hello World" > /home/dev/site/index.php \
+    && mv /home/dev/site /usr/share/nginx/www
 
-RUN chown -R topix:www-data /usr/share/nginx/www \
+RUN chown -R dev:www-data /usr/share/nginx/www \
     && chmod -R 775 /usr/share/nginx/www
 
 # Initialization and Startup Script

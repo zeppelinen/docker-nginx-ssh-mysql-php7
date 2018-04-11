@@ -1,0 +1,15 @@
+version: "2.1"
+services:
+  docker-nginx-ssh-mysql-php7:
+    hostname: docker-nginx-ssh-mysql-php7
+    image: zeppelinen/docker-nginx-ssh-mysql-php7:latest
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./web:/usr/share/nginx/www
+      - 
+    ports:
+      - 3306
+      - 22
+      - 80
+    environment:
+      ENV: "dev"
