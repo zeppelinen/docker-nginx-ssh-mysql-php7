@@ -13,3 +13,4 @@ services:
       - 80
     environment:
       ENV: "dev"
+      DEBIAN_FRONTEND: "noninteractive"
